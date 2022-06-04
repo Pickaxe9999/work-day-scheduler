@@ -28,9 +28,6 @@ dynamically create the elements to hold each hours work description
 -feature/update-present-color
 change the background color of the hours based on the current hour
 
--feature/enter-event
-the user can enter a text description within each hour of that hours tasks
-
 -feature/save-events
 save the current tasks descriptions to local storage
 

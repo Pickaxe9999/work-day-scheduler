@@ -29,7 +29,7 @@ var displayDate = function(){
 }
 
 //creates a single block for holding an hour some text and a save button
-var createTimeBlock = function(timeString){
+var createTimeBlock = function(timeString, timeId){
     //create the container to hold all hours of the workday
     var timeContainerEl = document.createElement("div");
     timeContainerEl.className = "container";
@@ -48,7 +48,7 @@ var createTimeBlock = function(timeString){
     var textDescirption = document.createElement("input");
     textDescirption.className = "col-8 textarea description";
     textDescirption.type = "text";
-    textDescirption.placeholder = "Sample Text";
+    textDescirption.setAttribute("id", timeId)
     timeBlock.appendChild(textDescirption);
 
     //create the save Btn to save text
@@ -74,11 +74,31 @@ var createWorkDayTable = function(){
         if(i <= 3){
             time = time + 9;
             timeString = time + "am";
-            createTimeBlock(timeString);
+            createTimeBlock(timeString , time);
         }else{
             time = time + 9 - 12;
             timeString = time + "pm";
-            createTimeBlock(timeString);
+            createTimeBlock(timeString, time+12);
+        }
+    }
+}
+
+//audit each task to see if it need to be flagged in a different color
+var auditTasks = function(){
+    var timeBlocks = $(".textarea");
+    var time = new Date();
+    currentHour = time.getHours();
+    for(var i = 0; i < timeBlocks.length; i++){
+        var className = "col-8 textarea description";
+        if(timeBlocks[i].id < currentHour){
+            className = className + " bg-secondary";
+            timeBlocks[i].className = className;
+        }else if(timeBlocks[i].id == currentHour){
+            className = className + " bg-danger";
+            timeBlocks[i].className = className;
+        }else{
+            className = className + " bg-success";
+            timeBlocks[i].className = className;
         }
     }
 }
@@ -89,3 +109,11 @@ displayDate();
 
 //create the time blocks
 createWorkDayTable();
+
+//audit tasks when page is first loaded
+auditTasks();
+
+//audit each time block if its in the past, present, of future every 15 minutes
+setInterval(function() {
+    auditTasks();
+}, 900000);
