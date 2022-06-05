@@ -1,6 +1,6 @@
 var currentDayEl = document.querySelector("#currentDay");
 var timeBlocksContantainerEl = document.querySelector(".container");
-var saveDataArr = [];
+var saveDataArr = [" ", " ", " "," ", " ", " ", " ", " ", " ",];
 
 //get users current date and then create arrays pertaining to the days and month of a year
 var displayDate = function(){
@@ -36,7 +36,7 @@ var createTimeBlock = function(timeString, timeId){
 
     //create the container to hold each individual hour
     var timeBlock = document.createElement("div");
-    timeBlock.className = "row";
+    timeBlock.className = "row time-block";
     
     //create the time shown for each hour
     var time = document.createElement("div");
@@ -45,8 +45,8 @@ var createTimeBlock = function(timeString, timeId){
     timeBlock.appendChild(time);
 
     //create the area users can type in their tasks
-    var textDescirption = document.createElement("input");
-    textDescirption.className = "col-8 textarea description";
+    var textDescirption = document.createElement("textarea");
+    textDescirption.className = "col-8 description";
     textDescirption.type = "text";
     textDescirption.setAttribute("id", timeId)
     timeBlock.appendChild(textDescirption);
@@ -85,24 +85,61 @@ var createWorkDayTable = function(){
 
 //audit each task to see if it need to be flagged in a different color
 var auditTasks = function(){
-    var timeBlocks = $(".textarea");
+    var timeBlocks = $("textarea");
     var time = new Date();
     currentHour = time.getHours();
     for(var i = 0; i < timeBlocks.length; i++){
-        var className = "col-8 textarea description";
+        var className = "col-8 description";
         if(timeBlocks[i].id < currentHour){
-            className = className + " bg-secondary";
+            className = className + " past";
             timeBlocks[i].className = className;
         }else if(timeBlocks[i].id == currentHour){
-            className = className + " bg-danger";
+            className = className + " present";
             timeBlocks[i].className = className;
         }else{
-            className = className + " bg-success";
+            className = className + " future";
             timeBlocks[i].className = className;
         }
     }
 }
 
+//event handler for click functions
+var saveBtnHandler = function(event){
+    var clickTarget = event.target;
+    //if the user selects the save icon
+    if(clickTarget.matches(".fas")){
+        clickTarget = clickTarget.parentElement;
+    }
+
+    //if the user clicks the save button
+    if(clickTarget.matches(".saveBtn")){
+        //slect the input element of that row. Then retrieve the Id - 9 to make it an index to an array for saving to local storage
+        var userInput = clickTarget.parentElement.querySelector("textarea");
+        var index = parseInt(userInput.id) - 9;
+        saveDataArr[index] = userInput.value;
+        saveTasks(saveDataArr);
+        console.log(saveDataArr);
+    }
+}
+
+//save tasks function
+var saveTasks = function(saveDataArr){
+    localStorage.setItem("userTasks", JSON.stringify(saveDataArr));
+}
+
+//load tasks function
+var loadTasks = function(){
+    var savedTasks = localStorage.getItem("userTasks");
+    savedTasks = JSON.parse(savedTasks);
+
+    console.log(savedTasks);
+
+    for(var i = 0; i < 9; i++){
+        var index = (i+9).toString();
+        var userInput = document.getElementById(index);
+        userInput.value = savedTasks[i];
+    }
+}
 
 //Display the current Date to the screen
 displayDate();
@@ -118,30 +155,8 @@ setInterval(function() {
     auditTasks();
 }, 900000);
 
-//event handler for click functions
-var saveBtnHandler = function(event){
-    var clickTarget = event.target;
-    //if the user selects the save icon
-    if(clickTarget.matches(".fas")){
-        clickTarget = clickTarget.parentElement;
-    }
-
-    //if the array is empty
-    if(saveDataArr.length === 0){
-        for(var i = 0; i < 9; i++){
-            saveDataArr[i] = " ";
-        }
-    }
-
-    //if the user clicks the save button
-    if(clickTarget.matches(".saveBtn")){
-        //slect the input element of that row. Then retrieve the Id - 9 to make it an index to an array for saving to local storage
-        var userInput = clickTarget.parentElement.querySelector("input");
-        var index = parseInt(userInput.id) - 9;
-        saveDataArr[index] = userInput.value;
-        localStorage.setItem("userTasks", JSON.stringify(saveDataArr));
-    }
-}
+//load tasks from local storage
+loadTasks();
 
 //save a specific hours tasks when the user prompts
 timeBlocksContantainerEl.addEventListener("click", saveBtnHandler);
