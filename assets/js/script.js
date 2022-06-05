@@ -1,6 +1,6 @@
 var currentDayEl = document.querySelector("#currentDay");
 var timeBlocksContantainerEl = document.querySelector(".container");
-var timeBlockArr = [];
+var saveDataArr = [];
 
 //get users current date and then create arrays pertaining to the days and month of a year
 var displayDate = function(){
@@ -117,3 +117,31 @@ auditTasks();
 setInterval(function() {
     auditTasks();
 }, 900000);
+
+//event handler for click functions
+var saveBtnHandler = function(event){
+    var clickTarget = event.target;
+    //if the user selects the save icon
+    if(clickTarget.matches(".fas")){
+        clickTarget = clickTarget.parentElement;
+    }
+
+    //if the array is empty
+    if(saveDataArr.length === 0){
+        for(var i = 0; i < 9; i++){
+            saveDataArr[i] = " ";
+        }
+    }
+
+    //if the user clicks the save button
+    if(clickTarget.matches(".saveBtn")){
+        //slect the input element of that row. Then retrieve the Id - 9 to make it an index to an array for saving to local storage
+        var userInput = clickTarget.parentElement.querySelector("input");
+        var index = parseInt(userInput.id) - 9;
+        saveDataArr[index] = userInput.value;
+        localStorage.setItem("userTasks", JSON.stringify(saveDataArr));
+    }
+}
+
+//save a specific hours tasks when the user prompts
+timeBlocksContantainerEl.addEventListener("click", saveBtnHandler);
