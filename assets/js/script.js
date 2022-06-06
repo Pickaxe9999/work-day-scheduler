@@ -113,12 +113,13 @@ var saveBtnHandler = function(event){
 
     //if the user clicks the save button
     if(clickTarget.matches(".saveBtn")){
-        //slect the input element of that row. Then retrieve the Id - 9 to make it an index to an array for saving to local storage
-        var userInput = clickTarget.parentElement.querySelector("textarea");
-        var index = parseInt(userInput.id) - 9;
-        saveDataArr[index] = userInput.value;
-        saveTasks(saveDataArr);
-        console.log(saveDataArr);
+
+        //grab the string in every textarea tag and addign it to an array
+        for(var i = 0; i < 9; i++){
+            var userInput = $("textarea")[i].value;
+            saveDataArr[i] = userInput;
+            saveTasks(saveDataArr);
+        }
     }
 }
 

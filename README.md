@@ -33,3 +33,12 @@ save the current tasks descriptions to local storage
 
 -feature/persistant-events
 be able to retrive text description for each hour based on if saved data is availible from local storage
+
+
+
+![image](https://user-images.githubusercontent.com/103781767/172085223-b1c339f2-c345-4067-ab8b-2ed28246494b.png)
+
+Last Updated By - Jacob_Hannah(jacob.hannah164@gmail.com)
+Last Updated - 6/5/2022
+Website Link - https://pickaxe9999.github.io/work-day-scheduler/
+Github - https://github.com/Pickaxe9999/work-day-scheduler
